@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: ISC */
 /**
  * Copyright (c) 2020 Abderraouf Adjal <abderraouf.adjal@gmail.com>
  *
