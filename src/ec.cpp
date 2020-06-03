@@ -21,8 +21,6 @@
 # include "../backends/esp8266_ard_fs_native.cpp"
 #elif EC_BK_CONF == EC_BK_ESP8266_ARD_SPIFFS_NATIVE
 # include "../backends/esp8266_ard_fs_native.cpp"
-#elif EC_BK_CONF == EC_BK_ESP8266_ARD_SDFS_NATIVE
-# include "../backends/esp8266_ard_fs_native.cpp"
 #else 
 # error "Must define valid EC_BK_CONF macro"
 #endif /* EC_BK_CONF */
