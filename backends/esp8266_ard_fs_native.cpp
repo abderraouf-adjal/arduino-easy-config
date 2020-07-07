@@ -35,12 +35,12 @@ bool
 ec_db_init(void)
 {
     if (EC_FS_IMPL.exists(EC_DB_LOC)) {
-        EC_DBG("WARNING: Existing EC_DB_LOC.\n");
+        EC_DBG("ec_db_init: WARNING: Existing EC_DB_LOC.\n");
         return true;
     }
 #if EC_BK_CONF == EC_BK_ESP8266_ARD_LFS_NATIVE
     if (! EC_FS_IMPL.mkdir(EC_DB_LOC)) {
-        EC_DBG("Could not create EC_DB_LOC or not mounted FS.\n");
+        EC_DBG("ec_db_init: Could not create EC_DB_LOC or not mounted FS.\n");
         return false;
     }
 #endif /* EC_BK_CONF */
@@ -51,16 +51,16 @@ bool
 ec_db_is_ready(void)
 {
     if (! ec_storage_mount()) {
-        EC_DBG("Unable to mount FS.\n");
+        EC_DBG("ec_db_is_ready: Unable to mount FS.\n");
         return false;
     }
 #if EC_BK_CONF == EC_BK_ESP8266_ARD_LFS_NATIVE
     if (! EC_FS_IMPL.exists(EC_DB_LOC)) {
-        EC_DBG("DB is not initialized.\n");
+        EC_DBG("ec_db_is_ready: DB is not initialized.\n");
         return false;
     }
 #endif /* EC_BK_CONF */
-    EC_DBG("ec_db_is_ready == true.\n");
+    EC_DBG("ec_db_is_ready: ec_db_is_ready == true.\n");
     return true;
 }
 
@@ -74,23 +74,23 @@ ec_db_add(const char* item)
     
 #if EC_BK_CONF == EC_BK_ESP8266_ARD_LFS_NATIVE
     if (! EC_FS_IMPL.exists(EC_DB_LOC)) {
-        EC_DBG("Nonexistent path or not mounted FS.\n");
+        EC_DBG("ec_db_add: Nonexistent path or not mounted FS.\n");
         return false;
     }
 #endif /* EC_BK_CONF */
     l = snprintf(item_fullpath, sizeof(item_fullpath),
                  "%s/%s", EC_DB_LOC, item);
     if ((l < 0) || (! _ec_FS_pathValid(item_fullpath))) {
-        EC_DBG("Invalid FS fullpath.\n");
+        EC_DBG("ec_db_add: Invalid FS fullpath.\n");
         return false;
     }
     if (EC_FS_IMPL.exists(item_fullpath)) {
-        EC_DBG("Existing item path in FS.\n");
+        EC_DBG("ec_db_add: Existing item path in FS.\n");
         return true;
     }
     file = EC_FS_IMPL.open(item_fullpath, "w");
     if (! file) {
-        EC_DBG("Make item_fullpath in FS fail.\n");
+        EC_DBG("ec_db_add: Make item_fullpath in FS fail.\n");
         file.close();
         return false;
     }
@@ -107,22 +107,22 @@ ec_db_remove(const char* item)
     
 #if EC_BK_CONF == EC_BK_ESP8266_ARD_LFS_NATIVE
     if (! EC_FS_IMPL.exists(EC_DB_LOC)) {
-        EC_DBG("Nonexistent path or not mounted FS.\n");
+        EC_DBG("ec_db_remove: Nonexistent path or not mounted FS.\n");
         return false;
     }
 #endif /* EC_BK_CONF */
     l = snprintf(item_fullpath, sizeof(item_fullpath),
                  "%s/%s", EC_DB_LOC, item);
     if ((l < 0) || (! _ec_FS_pathValid(item_fullpath))) {
-        EC_DBG("Invalid FS fullpath.\n");
+        EC_DBG("ec_db_remove: Invalid FS fullpath.\n");
         return false;
     }
     if (! EC_FS_IMPL.exists(item_fullpath)) {
-        EC_DBG("Nonexistent item path in FS.\n");
+        EC_DBG("ec_db_remove: Nonexistent item path in FS.\n");
         return true;
     }
     if (! EC_FS_IMPL.remove(item_fullpath)) {
-        EC_DBG("Remove item_fullpath error.\n");
+        EC_DBG("ec_db_remove: Remove item_fullpath error.\n");
         return false;
     }
     return true;
@@ -138,23 +138,23 @@ ec_db_size(const char* item)
     
 #if EC_BK_CONF == EC_BK_ESP8266_ARD_LFS_NATIVE
     if (! EC_FS_IMPL.exists(EC_DB_LOC)) {
-        EC_DBG("Nonexistent path or not mounted FS.\n");
+        EC_DBG("ec_db_size: Nonexistent path or not mounted FS.\n");
         return -1;
     }
 #endif /* EC_BK_CONF */
     l = snprintf(item_fullpath, sizeof(item_fullpath),
                  "%s/%s", EC_DB_LOC, item);
     if ((l < 0) || (! _ec_FS_pathValid(item_fullpath))) {
-        EC_DBG("Invalid FS fullpath.\n");
+        EC_DBG("ec_db_size: Invalid FS fullpath.\n");
         return -2;
     }
     if (! EC_FS_IMPL.exists(item_fullpath)) {
-        EC_DBG("Nonexistent item path in FS.\n");
+        EC_DBG("ec_db_size: Nonexistent item path in FS.\n");
         return -3;
     }
     file = EC_FS_IMPL.open(item_fullpath, "r");
     if (! file) {
-        EC_DBG("Open (r) item_fullpath in FS fail.\n");
+        EC_DBG("ec_db_size: Open (r) item_fullpath in FS fail.\n");
         file.close();
         return -4;
     }
@@ -173,23 +173,23 @@ ec_db_read(const char* item, uint8_t* buf, size_t buf_lenmax)
     
 #if EC_BK_CONF == EC_BK_ESP8266_ARD_LFS_NATIVE
     if (! EC_FS_IMPL.exists(EC_DB_LOC)) {
-        EC_DBG("Nonexistent path or not mounted FS.\n");
+        EC_DBG("ec_db_read: Nonexistent path or not mounted FS.\n");
         return -1;
     }
 #endif /* EC_BK_CONF */
     l = snprintf(item_fullpath, sizeof(item_fullpath),
                  "%s/%s", EC_DB_LOC, item);
     if ((l < 0) || (! _ec_FS_pathValid(item_fullpath))) {
-        EC_DBG("Invalid FS fullpath.\n");
+        EC_DBG("ec_db_read: Invalid FS fullpath.\n");
         return -2;
     }
     if (! EC_FS_IMPL.exists(item_fullpath)) {
-        EC_DBG("Nonexistent item path in FS.\n");
+        EC_DBG("ec_db_read: Nonexistent item path in FS.\n");
         return -3;
     }
     file = EC_FS_IMPL.open(item_fullpath, "r");
     if (! file) {
-        EC_DBG("Open (r) item_fullpath in FS fail.\n");
+        EC_DBG("ec_db_read: Open (r) item_fullpath in FS fail.\n");
         file.close();
         return -4;
     }
@@ -198,14 +198,14 @@ ec_db_read(const char* item, uint8_t* buf, size_t buf_lenmax)
         return 0; /* Empty file. */
     } else if (file.position() != 0) {
         if (! file.seek(0, SeekSet)) {
-            EC_DBG("Zero FS seek() error.\n");
+            EC_DBG("ec_db_read: Zero FS seek() error.\n");
             file.close();
             return -5;
         }
     }
     data_len = file.read(buf, buf_lenmax);
     if (data_len == 0) {
-        EC_DBG("Read from item_fullpath in FS fail.\n");
+        EC_DBG("ec_db_read: Read from item_fullpath in FS fail.\n");
         file.close();
         return -6;
     }
@@ -224,30 +224,30 @@ ec_db_write(const char* item,
     
 #if EC_BK_CONF == EC_BK_ESP8266_ARD_LFS_NATIVE
     if (! EC_FS_IMPL.exists(EC_DB_LOC)) {
-        EC_DBG("Nonexistent path or not mounted FS.\n");
+        EC_DBG("ec_db_write: Nonexistent path or not mounted FS.\n");
         return -1;
     }
 #endif /* EC_BK_CONF */
     l = snprintf(item_fullpath, sizeof(item_fullpath),
                  "%s/%s", EC_DB_LOC, item);
     if ((l < 0) || (! _ec_FS_pathValid(item_fullpath))) {
-        EC_DBG("Invalid FS fullpath.\n");
+        EC_DBG("ec_db_write: Invalid FS fullpath.\n");
         return -2;
     }
     if (! EC_FS_IMPL.exists(item_fullpath)) {
-        EC_DBG("Nonexistent item path in FS.\n");
+        EC_DBG("ec_db_write: Nonexistent item path in FS.\n");
         return -3;
     }
     /* Open in "w" mode will truncate(0) (remove file content). */
     file = EC_FS_IMPL.open(item_fullpath, "w");
     if (! file) {
-        EC_DBG("Open (w) item_fullpath in FS fail.\n");
+        EC_DBG("ec_db_write: Open (w) item_fullpath in FS fail.\n");
         file.close();
         return -4;
     }
     data_len = file.write(buf, buf_len);
     if (data_len != buf_len) {
-        EC_DBG("Write to item_fullpath in FS fail.\n");
+        EC_DBG("ec_db_write: Write to item_fullpath in FS fail.\n");
         file.close();
         return -5;
     }
@@ -265,35 +265,35 @@ ec_db_memzero(const char* item)
     
 #if EC_BK_CONF == EC_BK_ESP8266_ARD_LFS_NATIVE
     if (! EC_FS_IMPL.exists(EC_DB_LOC)) {
-        EC_DBG("Nonexistent path or not mounted FS.\n");
+        EC_DBG("ec_db_memzero: Nonexistent path or not mounted FS.\n");
         return false;
     }
 #endif /* EC_BK_CONF */
     l = snprintf(item_fullpath, sizeof(item_fullpath),
                  "%s/%s", EC_DB_LOC, item);
     if ((l < 0) || (! _ec_FS_pathValid(item_fullpath))) {
-        EC_DBG("Invalid FS fullpath.\n");
+        EC_DBG("ec_db_memzero: Invalid FS fullpath.\n");
         return false;
     }
     if (! EC_FS_IMPL.exists(item_fullpath)) {
-        EC_DBG("Nonexistent item path in FS.\n");
+        EC_DBG("ec_db_memzero: Nonexistent item path in FS.\n");
         return false;
     }
     /* Open in "w" mode will truncate(0) (remove file content). */
     file = EC_FS_IMPL.open(item_fullpath, "r+");
     if (! file) {
-        EC_DBG("Open (r+) item_fullpath in FS fail.\n");
+        EC_DBG("ec_db_memzero: Open (r+) item_fullpath in FS fail.\n");
         file.close();
         return false;
     }
     fsz = file.size();
     if (fsz == 0) {
-        EC_DBG("Item size is 0.\n");
+        EC_DBG("ec_db_memzero: Item size is 0.\n");
         file.close(); /* Nothing todo. */
         return true;
     }
     if (file.position() != 0) {
-         EC_DBG("Item FS CUR position != 0.\n");
+         EC_DBG("ec_db_memzero: Item FS CUR position != 0.\n");
         if (! file.seek(0, SeekSet)) {
             EC_DBG("Zero FS seek() error.\n");
             file.close();
@@ -303,7 +303,7 @@ ec_db_memzero(const char* item)
     /* Zero the file content. */
     for (size_t i = 0; i < fsz; i++) {
         if (file.write(0x00) != 1) {
-            EC_DBG("Zero FS file write() error.\n");
+            EC_DBG("ec_db_memzero: Zero FS file write() error.\n");
             file.close();
             return false;
         }
